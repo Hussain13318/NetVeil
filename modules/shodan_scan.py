@@ -33,7 +33,25 @@ def run(target: str, console: Console) -> dict:
         console.print(f"  [dim]Resolved {target} → {ip}[/dim]")
 
     try:
-        api  = shodan.Shodan(SHODAN_API_KEY)
+        api = shodan.Shodan(SHODAN_API_KEY)
+
+        # Check account limits first so users get a clear reason for 403 errors.
+        try:
+            info = api.info()
+            query_credits = info.get("query_credits", 0)
+            plan = info.get("plan", "unknown")
+            if query_credits == 0:
+                console.print(
+                    "  [yellow][!] Shodan key is valid, but account has 0 query credits "
+                    f"(plan: {plan}). Host lookup is unavailable.[/yellow]"
+                )
+                console.print("  [dim]Tip: use other modules or upgrade/add credits for Shodan lookups.[/dim]")
+                console.print()
+                return results
+        except shodan.APIError:
+            # If info endpoint fails, continue and let host lookup error handling report details.
+            pass
+
         host = api.host(ip)
 
         # ── Host summary ──────────────────────────────────────────────
@@ -80,6 +98,9 @@ def run(target: str, console: Console) -> dict:
             console.print(f"  [yellow][!] No Shodan data available for {target}[/yellow]")
         elif "Invalid API key" in msg:
             console.print("  [red][!] Invalid Shodan API key.[/red]")
+        elif "403" in msg or "Access denied" in msg:
+            console.print("  [yellow][!] Access denied by Shodan (403). This is usually plan/credit restriction.[/yellow]")
+            console.print("  [dim]Run `python -c \"import os, shodan; print(shodan.Shodan(os.getenv('SHODAN_API_KEY')).info())\"` to check credits.[/dim]")
         else:
             console.print(f"  [red][!] Shodan error: {msg}[/red]")
     except Exception as e:
