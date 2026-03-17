@@ -29,7 +29,7 @@ NetVeil is an open-source OSINT (Open Source Intelligence) and threat reconnaiss
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/NetVeil.git
+git clone https://github.com/Hussain13318/NetVeil.git
 cd NetVeil
 
 # Install dependencies
@@ -168,6 +168,5 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## Author
 
-Built by **[Your Name]**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
+Built by **Hussain**
+- GitHub: [@Hussain13318](https://github.com/Hussain13318)

@@ -2,8 +2,8 @@
 """
 NetVeil - OSINT & Threat Recon Intelligence Tool
 -------------------------------------------------
-Author  : [Your Name]
-GitHub  : https://github.com/yourusername/NetVeil
+Author  : Hussain
+GitHub  : https://github.com/Hussain13318/NetVeil
 Version : 1.0
 """
 
@@ -28,7 +28,7 @@ BANNER = r"""
  |_| \_|\___|\__| \_/ \___|_|_|
 [/bold cyan]
 [bold white]      OSINT & Threat Recon Intelligence Tool[/bold white]
-[dim]      Version 1.0  |  github.com/yourusername/NetVeil[/dim]
+[dim]      Version 1.0  |  github.com/Hussain13318/NetVeil[/dim]
 """
 
 
