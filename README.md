@@ -17,7 +17,7 @@ NetVeil is an open-source OSINT (Open Source Intelligence) and threat reconnaiss
 | **DNS Enumeration** | Queries A, AAAA, MX, NS, TXT, CNAME, SOA records |
 | **WHOIS Lookup** | Registrar, creation/expiry dates, name servers, org info |
 | **Subdomain Discovery** | Multi-threaded brute-force using a customisable wordlist |
-| **IP Geolocation** | Country, city, ISP, ASN — no API key required |
+| **IP Geolocation** | Multi-IP geolocation with CDN/proxy edge-location warning — no API key required |
 | **SSL Analysis** | Certificate validity, issuer, SANs, expiry countdown |
 | **VirusTotal Reputation** | Malicious/suspicious engine counts, risk rating |
 | **Shodan Intelligence** | Open ports, services, OS fingerprint, known CVEs |
