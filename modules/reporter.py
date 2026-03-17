@@ -68,7 +68,9 @@ def _build_html(results: dict, target: str) -> str:
 
     # ── SSL ──────────────────────────────────────────────────────────
     if "ssl" in results:
-        sections_html += _section("SSL Certificate", _table(results["ssl"]))
+        # Skip internal numeric keys like days_remaining
+        ssl_rows = {k: v for k, v in results["ssl"].items() if k != "days_remaining"}
+        sections_html += _section("SSL Certificate", _table(ssl_rows))
 
     # ── VirusTotal ───────────────────────────────────────────────────
     if "virustotal" in results:

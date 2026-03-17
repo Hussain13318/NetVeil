@@ -31,18 +31,21 @@ def run(target: str, console: Console) -> dict:
         not_after  = cert.get("notAfter", "")
 
         # Expiry status
-        expiry_tag = ""
+        expiry_tag_rich  = ""   # Rich-formatted (terminal only)
+        expiry_tag_plain = ""   # Plain text (HTML report)
         if not_after:
             try:
                 expiry_dt = datetime.datetime.strptime(not_after, "%b %d %H:%M:%S %Y %Z")
                 days_left = (expiry_dt - datetime.datetime.utcnow()).days
                 if days_left < 0:
-                    expiry_tag = " [bold red][ EXPIRED ][/bold red]"
+                    expiry_tag_rich  = " [bold red][ EXPIRED ][/bold red]"
+                    expiry_tag_plain = " [ EXPIRED ]"
                 elif days_left < 30:
-                    expiry_tag = f" [bold yellow][ Expires in {days_left} days ][/bold yellow]"
+                    expiry_tag_rich  = f" [bold yellow][ Expires in {days_left} days ][/bold yellow]"
+                    expiry_tag_plain = f" [ Expires in {days_left} days ]"
                 else:
-                    expiry_tag = f" [bold green][ {days_left} days remaining ][/bold green]"
-                results["days_remaining"] = days_left
+                    expiry_tag_rich  = f" [bold green][ {days_left} days remaining ][/bold green]"
+                    expiry_tag_plain = f" [ {days_left} days remaining ]"
             except ValueError:
                 pass
 
@@ -59,11 +62,14 @@ def run(target: str, console: Console) -> dict:
             "Issued By":        issuer.get("organizationName", "N/A"),
             "Issuer CN":        issuer.get("commonName", ""),
             "Valid From":       not_before,
-            "Valid Until":      not_after + expiry_tag,
+            "Valid Until":      not_after + expiry_tag_rich,
             "TLS Version":      ssock.version() if False else cert.get("version", ""),
             "Serial Number":    str(cert.get("serialNumber", "")),
             "Alt Names (SANs)": ", ".join(sans[:8]) + (" …" if len(sans) > 8 else ""),
         }
+        # Plain-text version used by the HTML reporter (no Rich markup)
+        rows_plain = dict(rows)
+        rows_plain["Valid Until"] = not_after + expiry_tag_plain
 
         # Re-open briefly just to get TLS version
         try:
@@ -76,7 +82,8 @@ def run(target: str, console: Console) -> dict:
         for key, value in rows.items():
             if value:
                 table.add_row(key, str(value))
-                results[key] = str(value)
+                # Store plain-text version so HTML report has no Rich tags
+                results[key] = str(rows_plain.get(key, value))
 
         console.print(table)
 

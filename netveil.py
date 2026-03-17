@@ -78,31 +78,44 @@ Examples:
         "target": args.target,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
+    ran_any_module = False
 
     run_all = args.full
 
     if run_all or args.dns:
         results["dns"] = dns_enum.run(args.target, console)
+        ran_any_module = True
 
     if run_all or args.whois:
         results["whois"] = whois_lookup.run(args.target, console)
+        ran_any_module = True
 
     if run_all or args.subdomain:
         results["subdomains"] = subdomain.run(args.target, args.wordlist, args.threads, console)
+        ran_any_module = True
 
     if run_all or args.geo:
         results["geo"] = geo_ip.run(args.target, console)
+        ran_any_module = True
 
     if run_all or args.ssl:
         results["ssl"] = ssl_check.run(args.target, console)
+        ran_any_module = True
 
     if run_all or args.vt:
         results["virustotal"] = virustotal.run(args.target, console)
+        ran_any_module = True
 
     if run_all or args.shodan:
         results["shodan"] = shodan_scan.run(args.target, console)
+        ran_any_module = True
 
-    if args.report:
+    should_save_report = args.report
+    if not should_save_report and ran_any_module and sys.stdin.isatty():
+        choice = input("\nSave HTML report? [y/N]: ").strip().lower()
+        should_save_report = choice in ("y", "yes")
+
+    if should_save_report:
         report_path = reporter.generate(results, args.target)
         console.print(f"\n  [bold green][✓] HTML Report saved → [/bold green][cyan]{report_path}[/cyan]")
 
